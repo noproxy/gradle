@@ -16,6 +16,7 @@
 package org.gradle.api.internal.classpath;
 
 import com.google.common.collect.ImmutableList;
+import org.gradle.api.JavaVersion;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.internal.classpath.CachedJarFileStore;
 import org.gradle.internal.classpath.ClassPath;
@@ -161,6 +162,17 @@ public class DefaultModuleRegistry implements ModuleRegistry, CachedJarFileStore
 
     private Module module(String moduleName, Properties properties, Set<File> implementationClasspath) {
         String[] runtimeJarNames = split(properties.getProperty("runtime"));
+        if (JavaVersion.current().compareTo(JavaVersion.VERSION_1_9) < 0) {
+            List<String> filteredRuntimeJarNames = new ArrayList<String>(runtimeJarNames.length);
+            for (int i = 0; i < runtimeJarNames.length; i++) {
+                if (!runtimeJarNames[i].startsWith("jaxb-impl-")) {
+                    filteredRuntimeJarNames.add(runtimeJarNames[i]);
+                }
+            }
+            if (filteredRuntimeJarNames.size() < runtimeJarNames.length) {
+                runtimeJarNames = filteredRuntimeJarNames.toArray(new String[0]);
+            }
+        }
         Set<File> runtimeClasspath = findDependencyJars(moduleName, runtimeJarNames);
 
         String[] projects = split(properties.getProperty("projects"));
