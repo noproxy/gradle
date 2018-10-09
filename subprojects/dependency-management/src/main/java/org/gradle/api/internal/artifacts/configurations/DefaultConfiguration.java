@@ -89,6 +89,7 @@ import org.gradle.api.specs.Spec;
 import org.gradle.api.specs.Specs;
 import org.gradle.api.tasks.TaskDependency;
 import org.gradle.initialization.ProjectAccessListener;
+import org.gradle.internal.Actions;
 import org.gradle.internal.Cast;
 import org.gradle.internal.Describables;
 import org.gradle.internal.DisplayName;
@@ -600,7 +601,11 @@ public class DefaultConfiguration extends AbstractFileCollection implements Conf
                 if (failure != null) {
                     context.failed(failure);
                 }
-                context.setResult(new ResolveConfigurationResolutionBuildOperationResult(incoming, failure != null));
+                // When dependency resolution has failed, we don't want the build operation listeners to fail as well
+                // because:
+                // 1. the `failed` method will have been called with the user facing error
+                // 2. such an error may still lead to a valid dependency graph
+                context.setResult(new ResolveConfigurationResolutionBuildOperationResult(incoming.getResolutionResult(Actions.doNothing())));
             }
 
             @Override

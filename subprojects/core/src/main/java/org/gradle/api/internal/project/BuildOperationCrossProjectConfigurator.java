@@ -73,16 +73,12 @@ public class BuildOperationCrossProjectConfigurator implements CrossProjectConfi
         ((ProjectInternal)project).getMutationState().withMutableState(new Runnable() {
             @Override
             public void run() {
-                runProjectConfigureAction(project, configureAction);
-            }
-        });
-    }
-
-    private void runProjectConfigureAction(final Project project, final Action<? super Project> configureAction) {
-        buildOperationExecutor.run(new CrossConfigureProjectBuildOperation(project) {
-            @Override
-            public void run(BuildOperationContext context) {
-                Actions.with(project, mutationGuard.withMutationEnabled(configureAction));
+                buildOperationExecutor.run(new CrossConfigureProjectBuildOperation(project) {
+                    @Override
+                    public void run(BuildOperationContext context) {
+                        Actions.with(project, mutationGuard.withMutationEnabled(configureAction));
+                    }
+                });
             }
         });
     }
