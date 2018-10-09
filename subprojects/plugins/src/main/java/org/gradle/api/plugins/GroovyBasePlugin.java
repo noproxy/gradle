@@ -16,6 +16,7 @@
 
 package org.gradle.api.plugins;
 
+import com.google.common.collect.ImmutableList;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -36,6 +37,9 @@ import org.gradle.api.tasks.GroovyRuntime;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.compile.GroovyCompile;
 import org.gradle.api.tasks.javadoc.Groovydoc;
+import org.gradle.api.tasks.testing.Test;
+import org.gradle.internal.jvm.GroovyJpmsWorkarounds;
+import org.gradle.process.CommandLineArgumentProvider;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -69,6 +73,25 @@ public class GroovyBasePlugin implements Plugin<Project> {
         configureSourceSetDefaults();
 
         configureGroovydoc();
+        preventIllegalAccessWarnings();
+    }
+
+    private void preventIllegalAccessWarnings() {
+        project.getTasks().withType(Test.class).configureEach(new Action<Test>() {
+            @Override
+            public void execute(final Test test) {
+                test.getJvmArgumentProviders().add(new CommandLineArgumentProvider() {
+                    @Override
+                    public Iterable<String> asArguments() {
+                        if (test.getJavaVersion().isJava9Compatible()) {
+                            return GroovyJpmsWorkarounds.SUPPRESS_COMMON_GROOVY_WARNINGS;
+                        } else {
+                            return ImmutableList.of();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void configureGroovyRuntimeExtension() {
