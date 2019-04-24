@@ -50,6 +50,14 @@ public interface ConfigurablePublishArtifact extends PublishArtifact {
     void setClassifier(@Nullable String classifier);
 
     /**
+     * Sets whether this artifact is optional. When optional is set to true, this artifact is optional and
+     * the {@link PublishArtifact#getFile()} may not exists. The default value is false.
+     *
+     * @param optional true if this is a optional artifact
+     */
+    void setOptional(boolean optional);
+
+    /**
      * Registers some tasks which build this artifact.
      *
      * @param tasks The tasks. These are evaluated as per {@link org.gradle.api.Task#dependsOn(Object...)}.

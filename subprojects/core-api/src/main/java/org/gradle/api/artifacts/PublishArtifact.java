@@ -62,6 +62,14 @@ public interface PublishArtifact extends Buildable {
     String getClassifier();
 
     /**
+     * Return whether this artifact is optional. When optional is true, this file returned by
+     * the {@link PublishArtifact#getFile()} may not exists.
+     *
+     * @return true if this is a optional artifact
+     */
+    boolean isOptional();
+
+    /**
      * Returns the file of this artifact.
      *
      * @return The file. Never null.
