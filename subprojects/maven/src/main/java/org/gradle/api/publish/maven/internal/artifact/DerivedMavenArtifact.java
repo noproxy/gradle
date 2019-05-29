@@ -49,6 +49,11 @@ public class DerivedMavenArtifact extends AbstractMavenArtifact {
     }
 
     @Override
+    public boolean getOptional() {
+        return true;
+    }
+
+    @Override
     protected TaskDependencyInternal getDefaultBuildDependencies() {
         return TaskDependencyInternal.EMPTY;
     }

@@ -19,6 +19,7 @@ package org.gradle.api.publish.maven.tasks;
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.publish.internal.PublishOperation;
 import org.gradle.api.publish.maven.internal.publication.MavenPublicationInternal;
+import org.gradle.api.publish.maven.internal.publisher.FilteringOptionalMavenPublisher;
 import org.gradle.api.publish.maven.internal.publisher.MavenPublisher;
 import org.gradle.api.publish.maven.internal.publisher.ValidatingMavenPublisher;
 import org.gradle.api.tasks.TaskAction;
@@ -44,7 +45,8 @@ public class PublishToMavenLocal extends AbstractPublishToMaven {
             protected void publish() {
                 MavenPublisher localPublisher = getMavenPublishers().getLocalPublisher(getTemporaryDirFactory());
                 MavenPublisher validatingPublisher = new ValidatingMavenPublisher(localPublisher);
-                validatingPublisher.publish(publication.asNormalisedPublication(), null);
+                MavenPublisher filterOptionalMavenPublisher = new FilteringOptionalMavenPublisher(validatingPublisher);
+                filterOptionalMavenPublisher.publish(publication.asNormalisedPublication(), null);
             }
         }.run();
     }

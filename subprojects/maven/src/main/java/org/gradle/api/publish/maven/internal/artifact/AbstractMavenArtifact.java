@@ -31,6 +31,7 @@ public abstract class AbstractMavenArtifact implements MavenArtifact {
     private final DefaultTaskDependency additionalBuildDependencies;
     private String extension;
     private String classifier;
+    private boolean optional;
 
     protected AbstractMavenArtifact() {
         this.additionalBuildDependencies = new DefaultTaskDependency();
@@ -62,6 +63,16 @@ public abstract class AbstractMavenArtifact implements MavenArtifact {
     @Override
     public final void setClassifier(String classifier) {
         this.classifier = Strings.nullToEmpty(classifier);
+    }
+
+    @Override
+    public boolean getOptional() {
+        return optional;
+    }
+
+    @Override
+    public void setOptional(boolean optional) {
+        this.optional = optional;
     }
 
     @Override

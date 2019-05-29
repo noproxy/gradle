@@ -15,6 +15,7 @@
  */
 package org.gradle.api.publish.maven;
 
+import org.gradle.api.Incubating;
 import org.gradle.api.publish.PublicationArtifact;
 
 import javax.annotation.Nullable;
@@ -47,4 +48,24 @@ public interface MavenArtifact extends PublicationArtifact {
      * @param classifier The classifier.
      */
     void setClassifier(@Nullable String classifier);
+
+    /**
+     * Return whether this artifact is optional. When optional is true, the file returned by
+     * the {@link PublicationArtifact#getFile()} can be nonexistent.
+     *
+     * @return true if this is an optional artifact
+     * @since 5.6
+     */
+    @Incubating
+    boolean getOptional();
+
+    /**
+     * Sets whether this artifact is optional. When optional is set to true, the {@link PublicationArtifact#getFile()}
+     * can be nonexistent. The default value is false.
+     *
+     * @param optional true if this is an optional artifact
+     * @since 5.6
+     */
+    @Incubating
+    void setOptional(boolean optional);
 }

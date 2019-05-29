@@ -16,6 +16,7 @@
 
 package org.gradle.api.publish.ivy.internal.artifact;
 
+import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.Task;
 import org.gradle.api.internal.tasks.AbstractTaskDependency;
 import org.gradle.api.internal.tasks.TaskDependencyInternal;
@@ -86,6 +87,18 @@ public class SingleOutputTaskIvyArtifact extends AbstractIvyArtifact {
         @Override
         public void visitDependencies(TaskDependencyResolveContext context) {
             context.add(generator.get());
+        }
+    }
+
+    @Override
+    public boolean getOptional() {
+        return false;
+    }
+
+    @Override
+    public void setOptional(boolean optional) {
+        if (optional) {
+            throw new InvalidUserDataException("ivy descriptor artifact cannot be optional.");
         }
     }
 }
